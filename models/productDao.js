@@ -43,8 +43,10 @@ const getProductById = async (id) => {
       p.id = ${id}
   `;
 
-  product.detailImg = detailImages;
-  product.subImg = subImages;
+  if (product) {
+    product.detailImg = detailImages;
+    product.subImg = subImages;
+  }
 
   return product;
 };

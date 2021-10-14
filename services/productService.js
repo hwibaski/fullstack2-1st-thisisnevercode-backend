@@ -2,7 +2,7 @@ import { productDao } from '../models';
 
 const getProductById = async (id) => {
   const product = await productDao.getProductById(id);
-  if (product === undefined) {
+  if (!product) {
     const err = new Error('NOT_FOUND');
     err.statusCode = 404;
     throw err;
