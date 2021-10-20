@@ -1,25 +1,20 @@
-export const checkEmptyKeyOfValue = (userInfo) => {
-  const userInputData = Object.entries(userInfo);
+import AppError from '../errors/appError';
 
-  const userInputInfo = new Map(userInputData);
-  for (let data of userInputInfo) {
-    if (data[1] === '') return data[0];
+export const validation = (userInfo) => {
+  const { email, password, name, address } = userInfo;
+  const essentialInfo = { email, password, name, address };
+
+  const KeyList = ['email', 'password', 'name', 'address'];
+  const keys = Object.keys(userInfo);
+
+  // undefined, null, ''(빈스트링) 모두 잡을 수 있도록 essentialInfo[key]가 false인 경우 반환하도록
+  const emptyInfoValue = keys.filter((key) => !essentialInfo[key]);
+  const emptyInfoKey = KeyList.filter((key) => keys.indexOf(key) === -1);
+
+  if (emptyInfoKey.length !== 0) {
+    return new AppError.keyError(`${emptyInfoKey}_KEY_EMPTY`);
   }
-};
-
-export const checkEmptyKey = (KeyList, userInfo) => {
-  const keyArr = [];
-  let emptyKeyArr = [];
-  const userInputData = Object.entries(userInfo);
-  const userInputInfo = new Map(userInputData);
-
-  for (let key of userInputInfo.keys()) {
-    if (KeyList.includes(key)) {
-      keyArr.push(key);
-      const InputKeyAndListArr = keyArr.concat(KeyList);
-      const emptyKey = InputKeyAndListArr.filter((e) => !keyArr.includes(e));
-      emptyKeyArr = [...emptyKey];
-    }
+  if (emptyInfoValue.length !== 0) {
+    return new AppError.valueOfKeyError(`${emptyInfoValue}_VALUE_EMPTY`);
   }
-  return emptyKeyArr;
 };
