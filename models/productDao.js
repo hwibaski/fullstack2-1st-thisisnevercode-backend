@@ -1,3 +1,4 @@
+import { Prisma } from '.prisma/client';
 import prisma from '../prisma';
 
 const getProductById = async (id) => {
@@ -77,42 +78,6 @@ const getDetailImagesUrlByProductId = async (productId) => {
   return detailImageUrl;
 };
 
-const getProductByPriceAsc = async () => {
-  const products = await prisma.$queryRaw`
-  SELECT p.id,
-         p.name,
-         p.price,
-         p.main_image_url AS mainImageUrl
-  FROM products p
-  ORDER BY p.price
-  `;
-  return products;
-};
-
-const getProductByPriceDesc = async () => {
-  const products = await prisma.$queryRaw`
-  SELECT p.id,
-         p.name,
-         p.price,
-         p.main_image_url AS mainImageUrl
-  FROM products p
-  ORDER BY p.price DESC
-  `;
-  return products;
-};
-
-const getProductByRecent = async () => {
-  const products = await prisma.$queryRaw`
-  SELECT p.id,
-         p.name,
-         p.price,
-         p.main_image_url AS mainImageUrl
-  FROM products p
-  ORDER BY p.created_at
-  `;
-  return products;
-};
-
 const getProductByTrend = async () => {
   const products = await prisma.$queryRaw`
   SELECT p.id,
@@ -131,26 +96,40 @@ const getProductByTrend = async () => {
   return products;
 };
 
-const getProductBySort = async (sort) => {
+const getProductByPriceAndRecent = async (sort, offset) => {
+  const products = await prisma.$queryRaw`
+  SELECT p.id,
+         p.name,
+         p.price,
+         p.main_image_url AS mainImageUrl
+  FROM products p
+  ${sort === 'recent' ? Prisma.sql`ORDER BY p.created_at` : Prisma.empty}
+  ${sort === 'pricehigh' ? Prisma.sql`ORDER BY p.price DESC` : Prisma.empty}
+  ${sort === 'pricelow' ? Prisma.sql`ORDER BY p.price` : Prisma.empty}
+  limit 10
+  offset ${offset};
+  `;
+  return products;
+};
+
+const getProductBySort = async (sort, offset) => {
   const sortQuery = {
-    pricehigh: await getProductByPriceAsc(),
-    pricelow: await getProductByPriceDesc(),
-    recent: await getProductByRecent(),
-    trend: await getProductByTrend(),
+    pricehigh: () => getProductByPriceAndRecent(sort, offset),
+    pricelow: () => getProductByPriceAndRecent(sort, offset),
+    recent: () => getProductByPriceAndRecent(sort, offset),
+    trend: getProductByTrend,
   };
 
-  const products = sortQuery[sort];
+  const products = await sortQuery[sort]();
 
-  let productIdArr = [];
+  const productIdArr = [];
   for (const product of products) {
     productIdArr.push(product.id);
   }
 
-  for (let i = 0; i < productIdArr.length; i++) {
-    products[i].subImage = await getSubImagesUrlByProductId(productIdArr[i]);
-    products[i].detailImage = await getDetailImagesUrlByProductId(
-      productIdArr[i]
-    );
+  for (const [i, id] of productIdArr.entries()) {
+    products[i].subImage = await getSubImagesUrlByProductId(id);
+    products[i].detailImage = await getDetailImagesUrlByProductId(id);
   }
   return products;
 };
