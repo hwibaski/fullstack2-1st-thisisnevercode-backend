@@ -11,7 +11,7 @@ const createUser = async (userInfo) => {
 };
 
 const getUserInfoByEmail = async (email) => {
-  return await prisma.$queryRaw`
+  const user = await prisma.$queryRaw`
     SELECT
       u.email, u.password, u.id, u.address, u.name
     FROM
@@ -19,6 +19,10 @@ const getUserInfoByEmail = async (email) => {
     WHERE
       u.email = ${email}
   ;`;
+  if (user.length > 0) {
+    const [result] = user;
+    return result;
+  }
 };
 
 export default { createUser, getUserInfoByEmail };

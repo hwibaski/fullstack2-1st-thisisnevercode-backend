@@ -3,27 +3,23 @@ import jwtToken from '../utils/jwt';
 import bcrypt from 'bcrypt';
 import AppError from '../errors/appError';
 
-const signInUser = async (userInfo, _, next) => {
-  const [userData] = await signInDao.getUserInfo(userInfo.email);
-  console.log(userData);
+const signInUser = async (userInfo) => {
+  const userData = await signInDao.getUserInfo(userInfo.email);
 
-  if (userData === undefined) {
-    next(new AppError.invalidError('유효하지 않은 이메일입니다.'));
-    return;
-  }
-  const validHashedPsw = await bcrypt.compare(
-    userInfo.password,
-    userData.password
-  );
+  const token = jwtToken.generate({
+    id: userInfo.id,
+    username: userInfo.name,
+  });
 
-  if (!validHashedPsw) {
-    next(new AppError.invalidError('잘못된 패스워드입니다.'));
-    return;
+  if (!userData) {
+    throw new AppError.invalidError('INVALID_INPUT');
   } else {
-    const token = jwtToken.generate({
-      id: userInfo.id,
-      username: userInfo.name,
-    });
+    const validHashedPsw = await bcrypt.compare(
+      userInfo.password,
+      userData.password
+    );
+    // 이메일은 유효한 경우
+    if (!validHashedPsw) throw new AppError.invalidError('INVALID_INPUT');
     return token;
   }
 };
