@@ -8,12 +8,12 @@ function errorHandler(err, req, res, next) {
       status: err.status,
       message: err.message,
     });
-    return;
+  } else {
+    res.status(err.statusCode).json({
+      status: err.statusCode,
+      message: err.message,
+    });
   }
-  res.status(err.statusCode).json({
-    status: `BAD_REQUEST (${err.status})`,
-    message: err.message,
-  });
 }
 
 module.exports = errorHandler;

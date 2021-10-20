@@ -77,7 +77,7 @@ const getDetailImagesUrlByProductId = async (productId) => {
   return detailImageUrl;
 };
 
-const getProductByPriceAsc = async () => {
+const getProductByPriceAsc = async (offset) => {
   const products = await prisma.$queryRaw`
   SELECT p.id,
          p.name,
@@ -85,11 +85,13 @@ const getProductByPriceAsc = async () => {
          p.main_image_url AS mainImageUrl
   FROM products p
   ORDER BY p.price
+  LIMIT 10
+  OFFSET ${offset}
   `;
   return products;
 };
 
-const getProductByPriceDesc = async () => {
+const getProductByPriceDesc = async (offset) => {
   const products = await prisma.$queryRaw`
   SELECT p.id,
          p.name,
@@ -97,11 +99,13 @@ const getProductByPriceDesc = async () => {
          p.main_image_url AS mainImageUrl
   FROM products p
   ORDER BY p.price DESC
+  LIMIT 10
+  OFFSET ${offset}
   `;
   return products;
 };
 
-const getProductByRecent = async () => {
+const getProductByRecent = async (offset) => {
   const products = await prisma.$queryRaw`
   SELECT p.id,
          p.name,
@@ -109,7 +113,9 @@ const getProductByRecent = async () => {
          p.main_image_url AS mainImageUrl
   FROM products p
   ORDER BY p.created_at
-  `;
+  LIMIT 10
+  OFFSET ${offset}
+ `;
   return products;
 };
 
@@ -131,11 +137,11 @@ const getProductByTrend = async () => {
   return products;
 };
 
-const getProductBySort = async (sort) => {
+const getProductBySort = async (sort, offset) => {
   const sortQuery = {
-    pricehigh: await getProductByPriceAsc(),
-    pricelow: await getProductByPriceDesc(),
-    recent: await getProductByRecent(),
+    pricehigh: await getProductByPriceAsc(offset),
+    pricelow: await getProductByPriceDesc(offset),
+    recent: await getProductByRecent(offset),
     trend: await getProductByTrend(),
   };
 

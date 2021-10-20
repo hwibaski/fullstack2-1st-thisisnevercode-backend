@@ -15,8 +15,8 @@ const getProductById = async (req, res) => {
 };
 
 const getProductBySort = async (req, res) => {
-  const { sort } = req.query;
-  const product = await productService.getProductBySort(sort);
+  const { sort, offset } = req.query;
+  const product = await productService.getProductBySort(sort, offset);
   res.status(200).json({
     LIST_DATA: {
       category: 'SHOES',
