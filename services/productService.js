@@ -10,14 +10,22 @@ const getProductById = async (id) => {
   return product;
 };
 
-const getProductBySort = async (sort) => {
+const getProductBySort = async (sort, offset) => {
   const sortQuery = {
-    pricehigh: await productDao.getProductBySort('pricehigh'),
-    pricelow: await productDao.getProductBySort('pricelow'),
-    recent: await productDao.getProductBySort('recent'),
-    trend: await productDao.getProductBySort('trend'),
+    pricehigh: () => {
+      return productDao.getProductBySort('pricehigh', offset);
+    },
+    pricelow: () => {
+      return productDao.getProductBySort('pricelow', offset);
+    },
+    recent: () => {
+      return productDao.getProductBySort('recent', offset);
+    },
+    trend: () => {
+      return productDao.getProductBySort('trend');
+    },
   };
-  return sortQuery[sort];
+  return await sortQuery[sort]();
 };
 
 export default { getProductById, getProductBySort };
