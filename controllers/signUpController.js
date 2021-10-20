@@ -4,8 +4,9 @@ import { validation } from '../utils/checkValidation';
 
 const createUser = catchAsync(async (req, res, next) => {
   const userInfo = req.body;
+  const KeyList = ['email', 'password', 'name', 'address'];
 
-  const emptyError = validation(userInfo);
+  const emptyError = validation(userInfo, KeyList);
   if (emptyError) next(emptyError);
 
   const user = await signUpService.createUser(userInfo, res, next);
