@@ -26,7 +26,6 @@ const signInUser = catchAsync(async (req, res, next) => {
   const accessToken = await signInService.signInUser(userInfo, res, next);
   // 인가 된 사람의 경우
   const decodedToken = await jwtToken.verify(accessToken);
-  console.log(decodedToken);
 
   res.cookie('token', accessToken, {
     expiresIn: process.env.JWT_TTL,
