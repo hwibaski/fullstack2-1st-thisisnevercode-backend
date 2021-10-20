@@ -1,9 +1,13 @@
 import { signInService } from '../services';
 import catchAsync from '../utils/catchAsync';
+import { validation } from '../utils/checkValidation';
 import jwtToken from '../utils/jwt';
 
 const signInUser = catchAsync(async (req, res, next) => {
-  const emptyError = validation(userInfo);
+  const userInfo = req.body;
+  const KeyList = ['email', 'password'];
+
+  const emptyError = validation(userInfo, KeyList);
   if (emptyError) next(emptyError);
 
   const accessToken = await signInService.signInUser(userInfo, res, next);
