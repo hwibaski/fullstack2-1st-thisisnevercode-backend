@@ -1,5 +1,6 @@
 import { signInService } from '../services';
 import { validation } from '../utils/checkValidation';
+import jwtToken from '../utils/jwt';
 
 const signInUser = async (req, res, next) => {
   const userInfo = req.body;
@@ -8,13 +9,7 @@ const signInUser = async (req, res, next) => {
   const emptyError = validation(userInfo, KeyList);
   if (emptyError) next(emptyError);
 
-  const userWithAccessToken = await signInService.signInUser(
-    userInfo,
-    res,
-    next
-  );
-  // 인가된 사용자의 정보를 담은 변수
-  // const decodedToken = await jwtToken.verify(accessToken);
+  const userWithAccessToken = await signInService.signInUser(userInfo);
 
   userWithAccessToken &&
     res.cookie('token', userWithAccessToken, {
@@ -23,8 +18,8 @@ const signInUser = async (req, res, next) => {
     });
   userWithAccessToken &&
     res.status(200).json({
-      status: 200,
-      message: 'SUCCESS_LOGIN',
+      status: 'SUCCESS_LOGIN',
+      message: '로그인에 성공했습니다.',
       Authorization: userWithAccessToken,
     });
 };

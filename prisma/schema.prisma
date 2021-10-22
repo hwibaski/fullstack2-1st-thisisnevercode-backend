@@ -8,16 +8,17 @@ generator client {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(100)
-  email     String    @unique @db.VarChar(100)
-  password  String    @db.VarChar(100)
-  address   String    @db.VarChar(100)
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @map("updated_at")
-  isDeleted Boolean   @default(false) @map("is_deleted")
-  deletedAt DateTime? @map("deleted_at")
-  Order     Order[]
+  id                   Int       @id @default(autoincrement())
+  name                 String    @db.VarChar(100)
+  email                String    @unique @db.VarChar(100)
+  password             String    @db.VarChar(100)
+  address              String    @db.VarChar(100)
+  createdAt            DateTime? @default(now()) @map("created_at")
+  updatedAt            DateTime? @default(now()) @map("updated_at")
+  isDeleted            Boolean   @default(false) @map("is_deleted")
+  mandatoryPolicyAgree Boolean   @default(false) @map("mandatory_policy_agree")
+  deletedAt            DateTime? @map("deleted_at")
+  Order                Order[]
 
   @@map("users")
 }

@@ -12,8 +12,8 @@ const createUser = async (req, res, next) => {
 
   user &&
     res.status(201).json({
-      status: 201,
-      message: 'SUCCESS_SIGNUP',
+      status: 'SUCCESS_SIGNUP',
+      message: '회원가입에 성공했습니다.',
     });
 };
 

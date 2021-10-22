@@ -8,6 +8,6 @@ const router = express.Router();
 router.post('/register', catchAsync(signUpController.createUser));
 router.post('/login', catchAsync(signInController.signInUser));
 
-router.post('/login/auth', auth.check, signInController.signInUser);
+router.get('/login/auth', auth.check, catchAsync(signInController.signInUser));
 
 export default router;

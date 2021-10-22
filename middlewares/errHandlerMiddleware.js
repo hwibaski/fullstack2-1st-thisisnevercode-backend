@@ -12,7 +12,7 @@ function errorHandler(err, req, res, next) {
   } else {
     console.error(err.stack);
     res.status(err.statusCode).json({
-      status: err.statusCode,
+      status: 500,
       message: err.message,
     });
   }

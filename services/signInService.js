@@ -8,7 +8,7 @@ const signInUser = async (userInfo) => {
 
   const token = jwtToken.generate({
     id: userInfo.id,
-    username: userInfo.name,
+    account: userInfo.email,
   });
 
   if (!userData) {
