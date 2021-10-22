@@ -1,7 +1,7 @@
 import prisma from '../prisma';
 
 const getUserInfo = async (email) => {
-  return await prisma.$queryRaw`
+  const user = await prisma.$queryRaw`
     SELECT
       u.email, u.password, u.id, u.address
     FROM
@@ -9,6 +9,10 @@ const getUserInfo = async (email) => {
     WHERE
       u.email = ${email}
   ;`;
+  if (user.length > 0) {
+    const [registeredUserEmail] = user;
+    return registeredUserEmail;
+  }
 };
 
 export default { getUserInfo };

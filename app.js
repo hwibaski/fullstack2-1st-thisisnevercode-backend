@@ -4,8 +4,10 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import AppError from './errors/appError';
 import errorHandler from './middlewares/errHandlerMiddleware';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 
 app.use(morgan('dev'));
 
