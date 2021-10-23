@@ -8,18 +8,19 @@ module.exports.check = catchAsync(async (req, res, next) => {
     return;
   }
 
-  const accessToken = req.headers.cookie.slice(6);
+  const accessToken = req.headers.cookie.split(' ')[1];
+  console.log(accessToken.slice(6));
 
-  let payload;
-  payload = await jwt.verify(accessToken);
+  let decoded;
+  decoded = await jwt.verify(accessToken.slice(6));
 
-  if (!payload) {
+  if (!decoded) {
     next(new AppError.checkJWTAuth('만료된 토큰을 가진 사용자입니다'));
     return;
   } else {
     res.status(200).json({
       message: '인가된 사용자입니다.',
-      payload,
+      decoded,
     });
   }
 });
