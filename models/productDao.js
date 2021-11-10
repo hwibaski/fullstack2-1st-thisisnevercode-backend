@@ -7,7 +7,7 @@ const getProductById = async (id) => {
       key_number as keyNumber,
       di.detail_image_url as detailImg
     FROM
-      products P
+      products p
     LEFT JOIN
       detail_images di
     ON
@@ -21,7 +21,7 @@ const getProductById = async (id) => {
       key_number as keyNumber,
       si.sub_image_url as subImg
     FROM
-      products P
+      products p
     LEFT JOIN
       sub_images si
     ON
